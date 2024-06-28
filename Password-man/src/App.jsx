@@ -29,7 +29,7 @@ function App() {
   },[password]); 
 
   return (
-    <div className='w-dvw h-dvh box-border bg-black text-white  flex justify-center items-center'>
+    <div className='w-dvw h-dvh box-border bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white  flex justify-center items-center'>
       <div className='bg-gray-700 rounded-2xl p-10 font-medium'>
         <h1 className='text-4xl'>Password Generator</h1>
         <div className="placeholder flex items-center h-10 rounded-md my-2">
