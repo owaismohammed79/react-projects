@@ -40,13 +40,16 @@ function App() {
           Aur ref ={passwordRef} input box me diya he taaki uske reference ko uthao bhai tum*/}
           <button className='bg-sky-500 rounded-r-lg outline-none px-2 h-full hover:bg-sky-700'onClick={Copy_fn}>Copy</button>
         </div>
-        <div className="additional flex items-center justify-around my-2 w-[27rem] text-orange-500">
+        <div className="additional flex items-center justify-around my-2 text-orange-500">
+          <div className='w-[14.5rem]'>
           <input type="range" value={length} min={8} max= {100}  onChange={(e)=> setLength(e.target.value)}/> 
-          <label htmlFor='length' className=' px-1'>Length ({length})</label>
+          <label htmlFor='length' className=' px-1'>Length ({length})</label></div>
+          <div className='w-[6.5rem]'>
           <input type="checkbox" defaultChecked={numberAllowed} name="number" onClick={()=> setNumberAllowed(!numberAllowed)} />
-          <label htmlFor='number' className=' px-1'>Numbers</label>
+          <label htmlFor='number' className=' px-1'>Numbers</label></div>
+          <div className='w-[6.5rem]'>
           <input type="checkbox" defaultChecked={charAllowed} name="char" onClick={()=>setCharAllowed(!charAllowed)} />
-          <label htmlFor='char' className=' px-1'>Characters</label>
+          <label htmlFor='char' className=' px-1'>Characters</label></div>
         </div> 
       </div>
     </div>
