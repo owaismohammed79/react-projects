@@ -9,6 +9,7 @@ import Contact from './Components/Contact/Contact';
 import Github from './Components/Github/Github'
 import githubInfoLoader from './Components/Github/GithubAPI'
 import User from './Components/User/User'
+import ErrorPage from './Components/Error Page/ErrorPage'
 // RouterProvider is used to provide the routing functionality to the components
 
 
@@ -17,6 +18,7 @@ import User from './Components/User/User'
 //   {
 //     path: '/',
 //     element: <Layout />,
+//     errorElement: <ErrorPage />,
 //     children: [
 //       {
 //         path: "",
@@ -38,9 +40,11 @@ import User from './Components/User/User'
 //   }
 // ])
 
+//See that I have also added a errorElement in the main route and that is if the user tries to go to any other routes that are not defined in the main route or in its sub-routes then it will throw an error
+
 const router2 = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<Layout />}>
+    <Route path="/" element={<Layout />} errorElement={<ErrorPage />}>
       <Route path="" element={<Home />} />
       <Route path="about" element={<About />} />
       <Route path="contact" element={<Contact />} />
