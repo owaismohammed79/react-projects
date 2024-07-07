@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import {useTodo} from '../contexts/TodoContext'
+import {useTodo} from '../hooks/useTodo'
 
 //Because we are using the prop types to validate the props that are being passed to the component.
 //If the props are not passed correctly, it will throw an error in the console.

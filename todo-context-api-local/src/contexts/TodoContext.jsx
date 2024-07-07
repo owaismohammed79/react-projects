@@ -19,13 +19,11 @@
 
 
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useState } from "react";
 
-const TodoContext = createContext();
+export const TodoContext = createContext();
 
-export const useTodo = () => {
-    return useContext(TodoContext);
-}
+
 
 export const TodoProvider = ({ children }) => {
     const [todos, setTodos] = useState([]); //Here if you give some default value, remember that the local storage stops working
