@@ -15,7 +15,7 @@ function App() {
       const todos = JSON.parse(todosString);
       setTodos(todos);
     }
-  }, []);
+  }, [setTodos]);
 
 
     //This useEffect is used to set the todos to the local storage
