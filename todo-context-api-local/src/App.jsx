@@ -23,7 +23,7 @@ function App() {
    //It takes in 2 arguments, the key and value.
    //The key we have used here should be unique and same as the key we have used in the getItem
    //The value we have used here is the todos state which we are converting to a string
-
+  //We are having two different useEffects coz if we put both of them together then it will go into an infinite loop because it will have both setTodos and todos as dependencies
   useEffect(() => {
     if (todos.length > 0) {
       localStorage.setItem("todos", JSON.stringify(todos));
