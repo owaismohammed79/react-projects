@@ -1,10 +1,10 @@
 
 import { initializeApp } from "firebase/app";
-import {firebase_url} from "./Data";
+import {firebase_url, api_key} from "./Data";
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCEAHvyGiVCRfL96DU15eZWklRr8Yg82ZY",
+  apiKey: api_key,
   authDomain: "todo-app-b5bb3.firebaseapp.com",
   projectId: "todo-app-b5bb3",
   storageBucket: "todo-app-b5bb3.appspot.com",
