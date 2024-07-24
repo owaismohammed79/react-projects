@@ -23,11 +23,11 @@ function Todos({inputFocus}) {
                 className="inline-flex w-12 h-8 rounded text-lg border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 shrink-0 disabled:opacity-50 m-2 "
                 onClick={() => {
                     if (!(todo.editState)) {  
-                        dispatch(setEditState(true));
+                        dispatch(setEditState(todo.id, true));
                         inputFocus();
                         dispatch(setEditTodoId(todo.id))
                     } 
-                    else dispatch(setEditState(false))
+                    else dispatch(setEditState(todo.id, false))
                 }}
                 disabled={todo.editState}
             >
