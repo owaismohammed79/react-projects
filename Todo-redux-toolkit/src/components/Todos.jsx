@@ -1,8 +1,9 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { removeTodo} from '../features/todo/todoSlice'
+import { removeTodo, setEditState, setEditTodoId} from '../features/todo/todoSlice'
+import PropTypes from 'prop-types'
 
 
-function Todos() {
+function Todos({inputFocus}) {
   const todos = useSelector(state => state.todos); //This fn by default gets the access of state from the store
   const dispatch = useDispatch();
 
@@ -18,9 +19,23 @@ function Todos() {
           >
             <div className='text-white'>{todo.title}</div>
             <div className='flex items-center'>
+            <button
+                className="inline-flex w-12 h-8 rounded text-lg border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 shrink-0 disabled:opacity-50 m-2 "
+                onClick={() => {
+                    if (!(todo.editState)) {  
+                        dispatch(setEditState(true));
+                        inputFocus();
+                        dispatch(setEditTodoId(todo.id))
+                    } 
+                    else dispatch(setEditState(false))
+                }}
+                disabled={todo.editState}
+            >
+                {todo.editState ? "📁" : "✏️"}
+            </button>
               <button
               onClick={() => dispatch(removeTodo(todo.id))}
-                className="text-white bg-red-500 border-0 py-1 px-4 focus:outline-none hover:bg-red-600 rounded text-md"
+                className="text-white bg-red-500 border-0 py-1 px-3 focus:outline-none hover:bg-red-600 rounded text-md"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -43,6 +58,10 @@ function Todos() {
       </ul>
     </>
   )
+}
+
+Todos.propTypes = {
+  inputFocus: PropTypes.func.isRequired
 }
 
 export default Todos
