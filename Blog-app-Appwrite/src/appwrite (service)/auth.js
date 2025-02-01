@@ -25,49 +25,60 @@ export class AuthService{
     constructor(){
         this.client         //this.client = client nahi kar rhe he C++ ki tarah...
             .setEndpoint(conf.appwriteUrl)
-            .setProject(conf.appwriteProjectId); 
+            .setProject(conf.appwriteProjectId);
         this.account = new Account(this.client);
     }
 
-    async createAccount({email, username, password}) {//similarly isme function keywrd nahi use ho rha
+    async createAccount({email, password}) {//similarly isme function keywrd nahi use ho rha
         //try catch as there might be times when appwrite servers are down/anything
         try {
-            const userAccount = await this.account.create(ID.unique(),email, password, username);
+            const userAccount = await this.account.create(ID.unique(),email, password);
             if(userAccount){
-                return this.login(email, password);
+                return this.login({email, password}); //Ek class function me baitha same class ka function call kar rha he
             }else {
                 return  userAccount;
             }
         } catch (error) {
             console.log(`Appwrite Error in account creation: ${error}`)
+            throw error;
         }
     }
 
     async login({email, password}){
         try {
-            return await this.account.createEmailPasswordSession(email, password);
+            const userAccount = await this.account.createEmailPasswordSession(email, password);
+            localStorage.setItem('auth_token', userAccount.$id);
+            return userAccount;
         } catch (error) {
             console.log(`Appwrite Error in login: ${error}`)
+            throw error;
         }
     }
 
     async getCurrentUser(){
+        const sessionId = localStorage.getItem('auth_token');
+        if(!sessionId){
+            console.log("No session found in local storage")
+            return null;
+        }
         try {
             return await this.account.get();
         } catch (error) {
             console.log('Appwrite service :: getCurrentUser :: error', error);
+            localStorage.removeItem('auth_token');
         }
-        return null; //This is if it goes to the catch block but this memfunction should return smthing right/ if else also works
+        return null;    //This is if it goes to the catch block but this memfunction should return smthing right/ if else also works
     }
 
     async logout(){
         try {
             await this.account.deleteSessions();
+            localStorage.removeItem('auth_token');
         } catch (error) {
             console.log("Appwrite error:: Logout", error)
+            throw error;
         }
     }
-
 }
 
 const authService = new AuthService();

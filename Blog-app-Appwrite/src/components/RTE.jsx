@@ -1,8 +1,7 @@
 import { Controller } from 'react-hook-form';
 import {Editor} from '@tinymce/tinymce-react'
 import PropTypes from 'prop-types'
-
-
+import conf from '../config/conf'
 
 
 //This the component to handle the creation of the blog(post) or edit an existing one...
@@ -17,6 +16,7 @@ function RTE({name, control, label, defaultValue =""}) {
     control={control}
     render={({field: {onChange}}) => (
         <Editor
+        apiKey={conf.tinyMceApiKey}
         initialValue={defaultValue}
         init={{
             initialValue: defaultValue,
@@ -46,9 +46,9 @@ function RTE({name, control, label, defaultValue =""}) {
             ],
             toolbar:
             "undo redo | blocks | image | bold italic forecolor | alignleft aligncenter bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent |removeformat | help",
-            content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }"
-        }}
-        onEditorChange={onChange} //Any changes in the editor field values should call this function, this function is from 
+            content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+            }}
+            onEditorChange={onChange} //Any changes in the editor field values should call this function, this function is from the controller 
         />
     )}
     />
@@ -58,9 +58,9 @@ function RTE({name, control, label, defaultValue =""}) {
 
 RTE.propTypes = {
   name: PropTypes.string.isRequired,
-  control: PropTypes.string.isRequired,
+  control: PropTypes.object.isRequired,
   label: PropTypes.string,
-  defaultValue: PropTypes.string
+  defaultValue: PropTypes.string,
 }
 
 export default RTE

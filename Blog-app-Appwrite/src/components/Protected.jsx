@@ -11,15 +11,9 @@ function Protected({children, authentication =true}) {
   const navigate = useNavigate()
 
   useEffect(()=>{
-      // if (authStatus ===true){
-      //     navigate("/")
-      // } else if (authStatus === false) {
-      //     navigate("/login")
-      // }
-      //let authValue = authStatus === true ? true : false
-      if(authentication && authStatus !== authentication){ //Logic ulti likhi hui he, if authentication is true (it is a protected page) and u ain't logged in then simply go to login page else if authentication is false that means that it is a public route and no need to authenticate and stuff so go to home page
+      if(authentication && !authStatus){ //Logic ulti likhi hui he, if authentication is true (it is a protected page) and u ain't logged in then simply go to login page else if authentication is false that means that it is a public route and no need to authenticate and stuff so go to home page
         navigate("/login")
-      } else if(!authentication && authStatus !== authentication){ //TODO: the else statement feels a bit fishy here coz he shouldn't
+      } else if(!authentication && authStatus){ //TODO: the else statement feels a bit fishy here coz he shouldn't
         //be sending the user to the home page everytime...
           navigate("/")
       }
@@ -27,7 +21,7 @@ function Protected({children, authentication =true}) {
   },[authentication, authStatus, navigate]) //Check that even navigate is added as a dependency i.e coz whenever you navigate from 
   //one page to another 
 
-  return loader ? <h1>Loading...</h1>: {children};
+  return loader ? <h1>Loading...</h1>: <>{children}</>; //Children ko enclose karna hoga, just can't return children
 }
 
 Protected.propTypes = {

@@ -1,24 +1,64 @@
 import {useState, useEffect} from 'react'
 import { Container, Postcard } from '../components/index'
 import appwriteService from "../appwrite (service)/config"
+import { useSelector, useDispatch } from 'react-redux'
+import Loading  from "../components/ui/Loading"
+import {fetchPostsSuccess, fetchPostsFailure} from '../store/postSlice'
 
 function Home() {
-    const [posts, setPosts] = useState([])
+    const [loading, setLoading] = useState(true)
+    const authStatus = useSelector(state => state.auth.status)
+    const dispatch = useDispatch()
+    const posts = useSelector(state => state.posts.posts)
 
     useEffect(() => {
-        appwriteService.getPosts().then((posts) => {
-            if(posts) setPosts(posts.documents)
-        })
-    }, [])
+        const fetchPosts = async () => {
+            try{
+                appwriteService.getPosts().then((posts) => {
+                    if(posts) dispatch(fetchPostsSuccess(posts.documents))
+                    setLoading(false)
+                })
+            } catch (error) {
+                console.log(error)
+                dispatch(fetchPostsFailure(error))
+                setLoading(false)
+            }
+        }
+        fetchPosts()
+    }, [appwriteService])
 
-    if(posts.length === 0) {
+    if(loading) {
         return (
-            <div className='w-full py-8 mt-4 text-center'>
+            <div className='flex justify-center items-center w-full py-8 mt-4 font-bold min-h-screen'>
+                <Loading />
+            </div>
+        )
+    }
+
+    if (!authStatus) {
+        return (
+            <div className="w-full py-8 mt-4 text-center min-h-screen">
+                <Container>
+                    <div className="flex flex-wrap">
+                        <div className="p-2 w-full">
+                            <h1 className="text-2xl font-bold hover:text-gray-500">
+                                Login to read posts
+                            </h1>
+                        </div>
+                    </div>
+                </Container>
+            </div>
+        )
+    }
+
+    if(!posts || posts.length === 0) {
+        return (
+            <div className='w-full py-8 mt-4 text-center min-h-screen'>
             <Container>
                 <div className='flex flex-wrap'>
                     <div className='p-2 w-full'>
                         <h1 className='text-2xl font-bold hover:text-gray-500'>
-                            Login to read posts
+                            No posts found
                         </h1>
                     </div>
                 </div>
@@ -29,10 +69,10 @@ function Home() {
 
     return (
         <div className='w-full py-8'>
-            <Container>
-                <div className='flex flex-wrap'>
+            <Container> 
+                <div className='flex flex-wrap justify-between items-center'>
                 {posts.map((post) => (
-                    <div className='p-2 w-1/4' key = {post.$id}>
+                    <div className='p-2 w-1/4 ' key = {post.$id}>
                         <Postcard {...post} /> {/*Watch the syntax here*/}
                     </div>
                 ))}

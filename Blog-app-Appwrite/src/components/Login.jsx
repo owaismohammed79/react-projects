@@ -1,16 +1,20 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import {Input, Button, Logo} from './index'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {Link, useNavigate} from 'react-router-dom'
 import authService from '.././appwrite (service)/auth'
-import {login as authLogin} from '../store/authSlice'
+import {login} from '../store/authSlice'
 import {useForm} from 'react-hook-form'
+import { useOutletContext } from 'react-router-dom'
 
 function Login() {
     const [error, setError] = useState("")
+    const authStatus = useSelector((state) => state.auth)
+    const [showError, setShowError] = useState(false)
+    const { setIsActive } = useOutletContext();
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const {register, handleSubmit} = useForm() //Idhar handleSubmit is predefined fn name he change nahi kar sakte
+    const {register, handleSubmit, formState: {errors}} = useForm() //Idhar handleSubmit is predefined fn name he change nahi kar sakte
     //register ek function he jo ki kuch i/p leke kuch props inject karta he us component me taaki usko monitor kar sake
 
     const handleLogin = async (data) => { //useForm use karne ka yahi use case he ki saara data ko validate karo and
@@ -20,30 +24,45 @@ function Login() {
         const session = await authService.login(data) //Saare appwrite operations async he soo
         if(session){ //userData extract is lie karte he ki session management, security and access details ke lie
           const userData = await authService.getCurrentUser()
-          if(userData) dispatch(authLogin(userData)) //Agar userData milega nahi to store me dispatch hi nahi hoga ki logged in he
-          navigate("/")
+          if(userData) {
+            console.log("Login successful, user data:", userData)
+            dispatch(login(userData)) //Agar userData milega nahi to store me dispatch hi nahi hoga ki logged in he
+            setTimeout(() => navigate("/"), 100) //This is done coz the dispatch is async and we want the navigation to happen only after the dispatch is done
+          }
         }
       } catch (error) {
-        setError(error.message)
+        console.error("Login error:", error)
+        setError(error)
+        setShowError(true)
       }
     } 
 
+    function handleClick(e){
+      e.preventDefault()
+      navigate("/signup")
+      setIsActive('/signup')
+    }
+
+    useEffect(() => {
+      console.log("Auth state updated:", authStatus);
+    }, [authStatus]);
+
   return (
-    <div className='flex items-center justify-center w-full'>
-      <div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
+    <div className='flex items-center justify-center w-full mx-4'>
+      <div className={`mx-auto w-full max-w-lg bg-gray-200 rounded-xl p-10 border border-black/10`}>
         <div className="mb-2 flex justify-center">
           <span className="inline-block w-full max-w-[100px]">
               <Logo width="100%" />
           </span>
         </div>
         <h2 className="text-center text-2xl font-bold leading-tight">Sign in to your account</h2>
-        <p className="mt-2 text-center text-base text-black/60">
+        <p className="mt-2 text-center text-base text-black/70">
           Don&apos;t have any account?&nbsp;
-          <Link to="/signup" className="font-medium text-primary transition-all duration-200 hover:underline">
+          <Link onClick={handleClick} className="font-medium text-primary transition-all duration-200 hover:underline">
               Sign Up
           </Link>
         </p>
-        {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
+        {showError && <p className="text-red-600 mt-8 text-center">Error: {error}</p>}
         <form onSubmit={handleSubmit(handleLogin)} className='mt-8'>
           <div className='space-y-5'>
             <Input
@@ -59,6 +78,7 @@ function Login() {
                 //.test(value) to check if it is in the format or not and Regex start and end with /
             })}
             />
+            {errors.email && <p className="text-red-600 mt-8 text-center">{errors.email.message}</p>}
             <Input
             label="Password: "
             type="password"
@@ -71,6 +91,7 @@ function Login() {
                 }
             })}
             />
+            {errors.password && <p className="text-red-600 mt-8 text-center">{errors.password.message}</p>}
             <Button type="submit" className="w-full"> Sign in </Button>
           </div>
         </form>

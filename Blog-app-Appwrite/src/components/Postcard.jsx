@@ -1,6 +1,7 @@
 import appwriteService from '.././appwrite (service)/config' //Isme post creation, deletion, preview wale fns he
 import {Link} from 'react-router-dom'
 import PropTypes from 'prop-types'
+import { useEffect, useState } from 'react';
 
 //This is the card component which will render the blog posts in card format
 function Postcard({
@@ -8,16 +9,23 @@ function Postcard({
     title,
     featuredImage,
 }) {
+    const [previewObject, setPreviewObject] = useState(null);
+    
+    useEffect(()=>{
+        setPreviewObject(appwriteService.filePreview(featuredImage));
+    },[featuredImage, setPreviewObject])
+
+
   return (//Realize ki sab ko Link tag ke andar enclose kia h
-    <Link to={`/post/${$id}`}>
-        <div className='w-full bg-gray-100 rounded-xl p-4'>
-            <div className='w-full justify-center mb-4'>
+    <Link to={`/posts/${$id}`}>
+        <div className='w-full min-w-72 h-72 bg-gray-100 rounded-xl  flex flex-col justify-between'>
+            <div className='w-72 h-2/3 rounded-xl flex'>
                 {/*Idhar filePreview fn asks for fileId jisme ki featuredImage ki Id bhej rahe he kyunki uska preview chahiye na hame*/}
-                <img src={appwriteService.filePreview(featuredImage)} alt ={title} className='rounded-xl'/>
+                <img src={previewObject?.href} alt ={title} className='rounded-t-xl w-full object-cover'/>
             </div>
-            <h2 className='text-xl font-bold'>
+            <div className='h-full text-xl font-bold text-center flex flex-col justify-center'>
                 {title}
-            </h2>
+            </div>
         </div>
     </Link>
   )

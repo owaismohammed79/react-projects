@@ -4,14 +4,14 @@ import { Client, ID, Databases, Storage, Query } from "appwrite";
 export class DbService{
     client = new Client();
     databases;
-    storage;
+    bucket;
 
     constructor(){
         this.client
             .setEndpoint(conf.appwriteUrl)
             .setProject(conf.appwriteProjectId);
         this.databases = new Databases(this.client);
-        this.storage = new Storage(this.client);
+        this.bucket = new Storage(this.client);
     }
 
     async createPost({title, slug, content, featuredImage, status, userId}){
@@ -94,7 +94,7 @@ export class DbService{
     //File services
     async uploadFile(file){ //This is the actual file itself and not it's title or something
         try {
-            return await this.storage.createFile(
+            return await this.bucket.createFile(
                 conf.appwriteBucketId,
                 ID.unique(),
                 file
@@ -108,7 +108,7 @@ export class DbService{
 
     async deleteFile(fileId){
         try {
-            await this.storage.deleteFile(
+            await this.bucket.deleteFile(
                 conf.appwriteBucketId,
                 fileId
             )
@@ -121,7 +121,7 @@ export class DbService{
 
     filePreview(fileId){ //this ain't a async fn as this returns the preview as soon as it's called
         try {
-            return this.storage.getFilePreview(
+            return this.bucket.getFilePreview(
                 conf.appwriteBucketId,
                 fileId
             )

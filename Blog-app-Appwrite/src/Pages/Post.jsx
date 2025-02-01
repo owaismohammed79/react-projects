@@ -1,25 +1,35 @@
 import  { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import appwriteService from "../appwrite/config";
+import appwriteService from "../appwrite (service)/config";
 import { Button, Container } from "../components";
 import parse from "html-react-parser";
 import { useSelector } from "react-redux";
 
 export default function Post() {
     const [post, setPost] = useState(null);
+    const [error, setError] = useState(null);
     const { slug } = useParams();
     const navigate = useNavigate();
 
     const userData = useSelector((state) => state.auth.userData);
     //Only if both the post and the userData exist then check if the person viewing this page is the author or not to give him edit access 
     const isAuthor = post && userData ? post.userId === userData.$id : false;
-
+    const [previewUrl, setPreviewUrl] = useState(null);
     useEffect(() => {
         if (slug) {
-            appwriteService.getPost(slug).then((post) => {
-                if (post) setPost(post);
-                else navigate("/");
-            });
+            try{
+                appwriteService.getPost(slug).then((post) => {
+                    if (post) {
+                        setPost(post);
+                        setPreviewUrl(appwriteService.filePreview(post.featuredImage))
+                        console.log(previewUrl)
+                    }
+                    else navigate("/");
+                });
+            } catch (error) {
+                setError(error);
+                console.log(error);
+            }
         } else navigate("/");
     }, [slug, navigate]);
 
@@ -32,12 +42,16 @@ export default function Post() {
         });
     };
 
+    if(error) {
+        return <div className="flex justify-center items-center h-screen font-bold">{error}</div>
+    }
+
     return post ? (
         <div className="py-8">
             <Container>
-                <div className="w-full flex justify-center mb-4 relative border rounded-xl p-2">
+                <div className="w-full flex justify-center mb-4 relative border rounded-xl p-2 h-96">
                     <img
-                        src={appwriteService.getFilePreview(post.featuredImage)}
+                        src={previewUrl.href}
                         alt={post.title}
                         className="rounded-xl"
                     />
@@ -65,5 +79,5 @@ export default function Post() {
                     </div>
             </Container>
         </div>
-    ) : null;
+    ) : (<div className="flex justify-center items-center h-screen font-bold">Loading...</div>);
 }
