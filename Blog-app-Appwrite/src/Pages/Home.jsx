@@ -68,11 +68,11 @@ function Home() {
     }
 
     return (
-        <div className='w-full py-8'>
+        <div className='w-full px-9 sm:px-0 py-8'>
             <Container> 
-                <div className='flex flex-wrap justify-between items-center'>
+                <div className='flex flex-wrap -mx-2'>
                 {posts.map((post) => (
-                    <div className='p-2 w-1/4 ' key = {post.$id}>
+                    <div className='p-2 w-full sm:w-1/2 md:w-1/3 lg:w-1/4' key = {post.$id}>
                         <Postcard {...post} /> {/*Watch the syntax here*/}
                     </div>
                 ))}

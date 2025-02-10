@@ -6,7 +6,7 @@ import { Provider } from 'react-redux'
 import store from "./store/store.js"
 import Protected from "./components/Protected.jsx"
 import Home from "./pages/Home.jsx";
-import AllPosts from "./pages/AllPosts.jsx";
+import MyPosts from "./pages/MyPosts.jsx";
 import EditPost from "./pages/EditPost.jsx";
 import LoginPg from "./pages/LoginPg.jsx";
 import Post from "./pages/Post.jsx";
@@ -21,7 +21,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/",
+        path: "/home",
         element: <Home />
       },
       {
@@ -41,10 +41,10 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: "/all-posts",
+        path: "/my-posts",
         element: (
           <Protected authentication>
-            <AllPosts />
+            <MyPosts />
           </Protected>
         )
       },

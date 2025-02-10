@@ -2,10 +2,11 @@ import {useEffect, useState} from 'react'
 import {useSelector} from 'react-redux'
 import {useNavigate} from 'react-router-dom'
 import PropTypes from 'prop-types'
+import Loading from './ui/Loading'
 
 //This component would be like a wrapper and is used to proctect pages which are to be shown only if user is logged in or has permissions to do so
 function Protected({children, authentication =true}) {
-  const [loader, setLoader] = useState(true);
+  const [loading, setLoading] = useState(true);
   const authStatus = useSelector(state => state.auth.status) //Realize that here we aren't making another API call instead checking
   //the store for the auth status
   const navigate = useNavigate()
@@ -15,13 +16,13 @@ function Protected({children, authentication =true}) {
         navigate("/login")
       } else if(!authentication && authStatus){ //TODO: the else statement feels a bit fishy here coz he shouldn't
         //be sending the user to the home page everytime...
-          navigate("/")
+          navigate("/home")
       }
-      setLoader(false)
+      setLoading(false)
   },[authentication, authStatus, navigate]) //Check that even navigate is added as a dependency i.e coz whenever you navigate from 
   //one page to another 
 
-  return loader ? <h1>Loading...</h1>: <>{children}</>; //Children ko enclose karna hoga, just can't return children
+  return loading ? <h1>Loading...</h1>: <>{children}</>; //Children ko enclose karna hoga, just can't return children
 }
 
 Protected.propTypes = {

@@ -31,6 +31,16 @@ function PostForm({post}) {
       }
     },[post?.featuredImage])
 
+    const handleImageChange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const previewUrl = URL.createObjectURL(file); //This is to create a URL for the img that is being uploaded
+        setImagePreviewObject({ href: previewUrl });
+      } else {
+        setImagePreviewObject(null);
+      }
+    };
+
     const submit = async (data) => {  
       if (!userData || !userData.$id) {
         setError("No valid user ID found");
@@ -128,12 +138,13 @@ function PostForm({post}) {
                 className="mb-4"
                 accept="image/png, image/jpg, image/jpeg, image/gif"
                 {...register("image", { required: !post })}
-                // onChange={handleImageChange}
+                onChange={handleImageChange}
             />
             {}
             {/*See above that img types are also given*/}
             {imagePreviewObject && (
                 <div className={`w-full mb-4 `}>
+                    <h2 className="m-1">Uploaded Image :</h2>
                     <img
                         src={imagePreviewObject.href}
                         alt=" Uploaded img Preview"

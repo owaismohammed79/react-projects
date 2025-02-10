@@ -4,6 +4,7 @@ import appwriteService from "../appwrite (service)/config";
 import { Button, Container } from "../components";
 import parse from "html-react-parser";
 import { useSelector } from "react-redux";
+import Loading from "../components/ui/Loading";
 
 export default function Post() {
     const [post, setPost] = useState(null);
@@ -22,22 +23,21 @@ export default function Post() {
                     if (post) {
                         setPost(post);
                         setPreviewUrl(appwriteService.filePreview(post.featuredImage))
-                        console.log(previewUrl)
                     }
-                    else navigate("/");
+                    else navigate("/home");
                 });
             } catch (error) {
                 setError(error);
                 console.log(error);
             }
-        } else navigate("/");
+        } else navigate("/home");
     }, [slug, navigate]);
 
     const deletePost = () => {
         appwriteService.deletePost(post.$id).then((status) => {
             if (status) {
                 appwriteService.deleteFile(post.featuredImage);
-                navigate("/");
+                navigate("/home");
             }
         });
     };
@@ -79,5 +79,7 @@ export default function Post() {
                     </div>
             </Container>
         </div>
-    ) : (<div className="flex justify-center items-center h-screen font-bold">Loading...</div>);
+    ) : (<div className="w-full flex justify-center items-center font-bold h-screen">
+        <Loading />
+        </div>);
 }

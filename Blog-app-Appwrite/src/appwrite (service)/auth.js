@@ -1,5 +1,5 @@
 import conf from '../config/conf.js'
-import { Client, Account, ID } from "appwrite";
+import { Client, Account, ID, OAuthProvider} from "appwrite";
 
 // const client = new Client()
 //     .setEndpoint('https://cloud.appwrite.io/v1') // Your API Endpoint
@@ -55,19 +55,26 @@ export class AuthService{
         }
     }
 
-    async getCurrentUser(){
-        const sessionId = localStorage.getItem('auth_token');
-        if(!sessionId){
-            console.log("No session found in local storage")
-            return null;
+    async loginWithGoogle(){
+        try {
+            const userData =  this.account.createOAuth2Session('google', 'http://localhost:5173/home', 'http://localhost:5173/login')
+            //This fucking thing actually returns user Data but the documentation doesn't say so
+            localStorage.setItem('auth_token', userData.$id);
+            return userData;
+        } catch (error) {
+            console.log(`Appwrite Error in login with Google: ${error}`)
+            throw error;
         }
+    }
+
+    async getCurrentUser(){
         try {
             return await this.account.get();
         } catch (error) {
             console.log('Appwrite service :: getCurrentUser :: error', error);
             localStorage.removeItem('auth_token');
+            return null;    //This is if it goes to the catch block but this memfunction should return smthing right/ if else also works
         }
-        return null;    //This is if it goes to the catch block but this memfunction should return smthing right/ if else also works
     }
 
     async logout(){

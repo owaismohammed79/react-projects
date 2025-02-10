@@ -4,9 +4,11 @@ import appwriteService from "../appwrite (service)/config"
 import Loading  from "../components/ui/Loading"
 import { useSelector } from 'react-redux'
 
-function AllPosts() {
+function MyPosts() {
     const [imagesLoaded, setImagesLoaded] = useState(false);
     const posts = useSelector(state => state.posts.posts)
+    const userData = useSelector((state) => state.auth.userData);
+    const filteredPosts = posts.filter(post => post.userId === userData.$id);
 
     const loadImages = async () => {
         if(posts){
@@ -26,9 +28,9 @@ function AllPosts() {
         </div>
     }
 
-    if(!posts || posts.length === 0) {
+    if(!filteredPosts || filteredPosts.length === 0) {
         return (
-            <div className="w-full py-8 mt-4 text-center min-h-screen">
+            <div className="w-full py-8 mt-4 text-center">
                 <Container>
                     <div className="flex flex-wrap">
                         <div className="p-2 w-full">
@@ -43,12 +45,13 @@ function AllPosts() {
     }
 
     return (
-        <div className="w-full py-8">
+        <div className="w-full px-9 sm:px-0 py-8">
             <Container>
-                <div className="flex flex-wrap">
+                <div className="flex flex-wrap -mx-2">
                 {posts && posts.map((post) => 
                 (
-                    <div key = {post.$id} className="p-2">
+                    post.userId === userData.$id &&
+                    <div key = {post.$id} className="p-2 w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
                         <Postcard {...post} />
                     </div>
                 ))}
@@ -58,4 +61,4 @@ function AllPosts() {
     )
 }
 
-export default AllPosts
+export default MyPosts
