@@ -5,7 +5,7 @@ import conf from '../config/conf'
 
 
 //This the component to handle the creation of the blog(post) or edit an existing one...
-function RTE({name, control, label, defaultValue =""}) {
+function RTE({name, control, label, defaultValue ="", errors}) {
   return (
     // If you need to integrate the editor with other parts of your application or implement custom features, Controller provides more control.
 
@@ -14,6 +14,7 @@ function RTE({name, control, label, defaultValue =""}) {
       <Controller
     name={name || "content"}
     control={control}
+    rules={{ required: 'This field is required' }}
     render={({field: {onChange}}) => (
         <Editor
         apiKey={conf.tinyMceApiKey}
@@ -52,6 +53,9 @@ function RTE({name, control, label, defaultValue =""}) {
         />
     )}
     />
+    {errors[name || "content"] && ( // Display error message
+          <p className="text-red-500">{errors[name || "content"].message}</p>
+        )}
     </div>
   )
 }
@@ -61,6 +65,7 @@ RTE.propTypes = {
   control: PropTypes.object.isRequired,
   label: PropTypes.string,
   defaultValue: PropTypes.string,
+  errors: PropTypes.object
 }
 
 export default RTE

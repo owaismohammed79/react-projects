@@ -109,15 +109,15 @@ function PostForm({post}) {
   return (
     <>
       {error && <p className="text-red-500">{error}</p>}
-      <form onSubmit={handleSubmit(submit)} className="flex flex-wrap border-2 bg-gray-200 border-slate-300 rounded-lg p-4">
-        <div className="w-2/3 px-2">
+      <form onSubmit={handleSubmit(submit)} className="flex flex-col md:flex-row border-2 bg-gray-200 border-slate-300 rounded-lg p-4">
+        <div className="md:w-2/3 px-2">
             <Input
                 label="Title :"
                 placeholder="Title"
                 className="mb-4"
                 {...register("title", { required: true }) }
             />
-            {errors.title && <p className="text-red-500">Title is required</p>}
+            {errors.title && <p className="text-red-500 my-1">Title is required</p>}
             <Input
                 label="Slug :"
                 placeholder="Slug"
@@ -128,19 +128,20 @@ function PostForm({post}) {
                     setValue("slug", slugTransform(e.currentTarget.value), { shouldValidate: true });
                 }}
             />
-            <RTE label="Content :" name="content" control={control} defaultValue={getValues("content")}/>
+            <RTE label="Content :" name="content" control={control} defaultValue={getValues("content")} errors={errors}/>
             {/*See above as to how we are extracting the older blog post content by making use of getValues function and setting it onto our RTE */}
         </div>
-        <div className="w-1/3 px-2">
+        <div className="md:w-1/3 px-2 mt-4 md:mt-0">
             <Input
                 label="Featured Image :"
                 type="file"
                 className="mb-4"
                 accept="image/png, image/jpg, image/jpeg, image/gif"
-                {...register("image", { required: !post })}
+                required
+                {...register("image", { required: true })}
                 onChange={handleImageChange}
             />
-            {}
+            {errors.image && <p className="text-red-500 my-1">Image is required</p>}
             {/*See above that img types are also given*/}
             {imagePreviewObject && (
                 <div className={`w-full mb-4 `}>
